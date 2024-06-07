@@ -27,9 +27,37 @@ def add_new_user(user_id: int, user_data: dict[str, Any]):
 	write_file_user_data(data)
 
 
+def add_extra_lesson(user_id: int, user_data: dict[str, Any]) -> str:
+	text = user_data['extra_lesson'].split("\n")
+	data = reading_user_data()
+	list_extra_lesson = []
+	text_complete = "Расписание успешно добавлено!"
+
+	count: int = 0
+
+	for i in range(len(text)):
+		if text[i].count("=") == 2:
+			list_extra_lesson.append(text[i].split("="))
+			count += 1
+		else:
+			text_complete = "Была добавлена только часть расписания, поскольку вы допустили ошибки в формате сообщения!"
+	if 0 < count < len(text):
+		text_complete = "Была добавлена только часть расписания, поскольку вы допустили ошибки в формате сообщения!"
+	elif count == 0:
+		text_complete = "Вы допустили ошибки в формате сообщения! Расписание не было добавлено."
+
+	data[str(user_id)]['extra lessons'] = list_extra_lesson
+	write_file_user_data(data)
+	return text_complete
+
+
 def get_class(user_id: int):
 	return reading_user_data()[str(user_id)]['class']
 
 
 def get_schedule_day(user_id: int, day_weekday: str):
 	return reading_schedule()[get_class(user_id)][day_weekday]
+
+
+def get_extra_lesson(user_id: int):
+	return reading_user_data()[str(user_id)]['extra lessons']

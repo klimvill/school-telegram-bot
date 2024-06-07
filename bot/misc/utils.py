@@ -1,7 +1,9 @@
 from datetime import datetime, time
 
+from bot.database import get_extra_lesson
 
-def get_lesson_number(number_lessons: int):
+
+def get_lesson_number(number_lessons: int) -> int | str:
 	"""Получение номера текущего урока"""
 	current_time = datetime.now().time()
 
@@ -20,7 +22,7 @@ def get_lesson_number(number_lessons: int):
 	return lesson
 
 
-def create_schedule(date: str, schedule_day: list[str]):
+def create_schedule(date: str, schedule_day: list[str]) -> str:
 	"""Создание текста расписания"""
 	count: int = 1
 
@@ -50,7 +52,7 @@ def create_schedule(date: str, schedule_day: list[str]):
 	return text_message
 
 
-def create_short_schedule(day_week: str, schedule_day: list[str]):
+def create_short_schedule(day_week: str, schedule_day: list[str]) -> str:
 	"""Создание сокращённого текста расписания"""
 	count: int = 1
 	text_message = f'📆 *Расписание уроков на {day_week}*\n'
@@ -64,4 +66,23 @@ def create_short_schedule(day_week: str, schedule_day: list[str]):
 				count += 1  # Через enumerate сделать не получится, потому что нужен пропуск (см. выше)
 	else: text_message += '\nВыходной'
 
+	return text_message
+
+
+def create_extra_lesson(user_id: int) -> str:
+	saved_day_week = None
+	text_message = '📆 *Расписание дополнительных занятий*\n'
+	extra_lesson = get_extra_lesson(user_id)
+
+	if not extra_lesson:
+		text_message += '\nРасписание не добавлено'
+	else:
+		for these_classes in extra_lesson:
+			day_week = these_classes[0]
+
+			if saved_day_week != day_week:
+				text_message += f"\n*{day_week}*\n"
+				saved_day_week = day_week
+			text_message += f"{these_classes[1]} ({these_classes[2]})\n"
+	text_message += "\n👇 Вы также можете посмотреть расписание на сегодня."
 	return text_message

@@ -2,11 +2,13 @@ from datetime import datetime, timedelta
 
 from aiogram import Router
 from aiogram.filters import Command
+from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
-from bot.database import get_schedule_day
-from bot.keybords import today_schedule_btn, paging_btn
-from bot.misc import create_schedule, create_short_schedule
+from bot.database import get_schedule_day, add_extra_lesson
+from bot.keybords import today_schedule_btn, paging_btn, add_extra_lesson_btn
+from bot.misc import create_schedule, create_short_schedule, create_extra_lesson, addExtraLesson_text
+from bot.state import AddExtraLesson
 
 router_schedule = Router()
 
@@ -39,12 +41,20 @@ async def tomorrow(message: Message):
 
 @router_schedule.message(Command('extraLesson'))
 async def extra_lesson(message: Message):
-	await message.answer('Расписание дополнительных занятий')
+	await message.answer(create_extra_lesson(message.from_user.id), reply_markup=today_schedule_btn)
 
 
 @router_schedule.message(Command('addExtraLesson'))
-async def add_extra_lesson(message: Message):
-	await message.answer('Добавление расписания дополнительных занятий')
+async def add_extra_lesson_one(message: Message, state: FSMContext):
+	await message.answer(addExtraLesson_text, reply_markup=add_extra_lesson_btn)
+	await state.set_state(AddExtraLesson.extra_lesson)
+
+
+@router_schedule.message(AddExtraLesson.extra_lesson)
+async def add_extra_lesson_two(message: Message, state: FSMContext):
+	await state.update_data(extra_lesson=message.text)
+	await message.answer(add_extra_lesson(message.from_user.id, await state.get_data()))
+	await state.clear()
 
 
 # Если использовать F.text - выдаёт ошибку
