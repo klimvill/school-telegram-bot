@@ -3,8 +3,8 @@ from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
-from bot.keybords import *
 from bot.database import *
+from bot.keybords import today_schedule_btn
 from bot.misc import *
 from bot.state import Register
 

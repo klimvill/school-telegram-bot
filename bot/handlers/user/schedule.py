@@ -17,7 +17,7 @@ router_schedule = Router()
 async def today(message: Message):
 	"""Вывод расписания на текущий день"""
 	today_date = datetime.today()
-	date = today_date.today().strftime('%d %b. %Y г.')
+	date = today_date.strftime('%d %b. %Y г.')
 	user_schedule_day = get_schedule_day(message.from_user.id, str(today_date.weekday()))
 
 	text_message = create_schedule(date, user_schedule_day)
@@ -30,10 +30,10 @@ async def today(message: Message):
 async def tomorrow(message: Message):
 	"""Вывод расписания на завтрашний день"""
 	tomorrow_date = datetime.today() + timedelta(days=1)
-	date = tomorrow_date.today().strftime('%d %b. %Y г.')
+	date = tomorrow_date.strftime('%d %b. %Y г.')
 	user_schedule_day = get_schedule_day(message.from_user.id, str(tomorrow_date.weekday()))
 
-	text_message = create_schedule(date, user_schedule_day)
+	text_message = create_short_schedule(date, user_schedule_day)
 	text_message += '\n\n👇 Вы также можете посмотреть расписание на сегодня.'
 
 	await message.answer(text_message, reply_markup=today_schedule_btn)
