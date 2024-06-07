@@ -5,16 +5,16 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums.parse_mode import ParseMode
 
-from .handlers import router
+from .handlers import register_all_handlers
 from .misc import BOT_TOKEN
 
 
 async def main():
 	bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN))
-	db = Dispatcher()
+	dp = Dispatcher()
 
-	db.include_router(router)
-	await db.start_polling(bot)
+	register_all_handlers(dp)
+	await dp.start_polling(bot)
 
 
 def start_bot():
