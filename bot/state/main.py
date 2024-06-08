@@ -7,3 +7,7 @@ class Register(StatesGroup):
 
 class AddExtraLesson(StatesGroup):
 	extra_lesson: str = State()
+
+
+class ChangeClass(StatesGroup):
+	class_number: str = State()

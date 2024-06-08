@@ -35,7 +35,7 @@ async def register_user(message: Message, state: FSMContext):
 	# todo: оптимизировать и сделать удобнее
 
 	if message.text.lower() in reading_schedule().keys():
-		await state.update_data(class_number=message.text)
+		await state.update_data(class_number=message.text.lower())
 
 		data = await state.get_data()
 		add_new_user(message.from_user.id, data)

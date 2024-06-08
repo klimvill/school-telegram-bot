@@ -61,3 +61,17 @@ def get_schedule_day(user_id: int, day_weekday: str):
 
 def get_extra_lesson(user_id: int):
 	return reading_user_data()[str(user_id)]['extra lessons']
+
+
+def get_info_student(user_id: int):
+	user_id = str(user_id)
+	user_data = reading_user_data()
+
+	return (user_data[user_id]['id'], user_data[user_id]['role'],
+			user_data[user_id]['class'], user_data[user_id]['date registration'])
+
+
+def set_class(user_id: int, class_: str):
+	data = reading_user_data()
+	data[str(user_id)]['class'] = class_
+	write_file_user_data(data)

@@ -18,6 +18,11 @@ add_extra_lesson_btn = InlineKeyboardMarkup(inline_keyboard=[
 	[InlineKeyboardButton(text="🗑 Удалить", callback_data="delete_schedule")],
 	[InlineKeyboardButton(text="◀️ Назад", callback_data="exit_add_extra_lesson")],
 ])
+account_btn = InlineKeyboardMarkup(inline_keyboard=[
+	[InlineKeyboardButton(text="🌀 Сменить класс", callback_data="change_class")],
+	[InlineKeyboardButton(text="🎭 Сменить роль", callback_data="change_role")],
+	[InlineKeyboardButton(text="🌟 Достижения", callback_data="progress")],
+])
 
 
 async def tomorrow_schedule_btn(day: int):
