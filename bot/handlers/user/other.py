@@ -4,7 +4,7 @@ from aiogram.types import Message
 
 from bot.database import get_info_student
 from bot.keybords import teachers_btn_one, account_btn
-from bot.misc import teachers_text
+from bot.misc import teachers_text, links_text, person_text
 
 router_other = Router()
 
@@ -28,9 +28,9 @@ async def teachers(message: Message):
 
 @router_other.message(Command('person'))
 async def person(message: Message):
-	pass
+	await message.answer(person_text)
 
 
 @router_other.message(Command('links'))
 async def links(message: Message):
-	pass
+	await message.answer(links_text)

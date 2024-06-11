@@ -51,6 +51,12 @@ def add_extra_lesson(user_id: int, user_data: dict[str, Any]) -> str:
 	return text_complete
 
 
+def delete_extra_lesson(user_id: int) -> None:
+	data = reading_user_data()
+	data[str(user_id)]['extra lessons'] = []
+	write_file_user_data(data)
+
+
 def get_class(user_id: int):
 	return reading_user_data()[str(user_id)]['class']
 

@@ -75,7 +75,7 @@ def create_extra_lesson(user_id: int) -> str:
 	extra_lesson = get_extra_lesson(user_id)
 
 	if not extra_lesson:
-		text_message += '\nРасписание не добавлено'
+		text_message += '\nРасписание не добавлено\n'
 	else:
 		for these_classes in extra_lesson:
 			day_week = these_classes[0]

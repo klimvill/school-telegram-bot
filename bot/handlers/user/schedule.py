@@ -73,7 +73,7 @@ async def tuesday(message: Message):
 @router_schedule.message(lambda message: message.text.lower() in ('ср', 'среда', 'wednesday', 'wed'))
 async def wednesday(message: Message):
 	user_schedule_day = get_schedule_day(message.from_user.id, '2')
-	await message.answer(create_short_schedule('среда', user_schedule_day))
+	await message.answer(create_short_schedule('среду', user_schedule_day))
 
 
 @router_schedule.message(lambda message: message.text.lower() in ('чт', 'четверг', 'thursday', 'thu'))
@@ -85,13 +85,13 @@ async def thursday(message: Message):
 @router_schedule.message(lambda message: message.text.lower() in ('пт', 'пятница', 'friday', 'fri'))
 async def friday(message: Message):
 	user_schedule_day = get_schedule_day(message.from_user.id, '4')
-	await message.answer(create_short_schedule('пятница', user_schedule_day))
+	await message.answer(create_short_schedule('пятницу', user_schedule_day))
 
 
 @router_schedule.message(lambda message: message.text.lower() in ('сб', 'суббота', 'saturday', 'sat'))
 async def saturday(message: Message):
 	user_schedule_day = get_schedule_day(message.from_user.id, '5')
-	await message.answer(create_short_schedule('суббота', user_schedule_day))
+	await message.answer(create_short_schedule('субботу', user_schedule_day))
 
 
 @router_schedule.message(lambda message: message.text.lower() in ('вс', 'воскресенье', 'sunday', 'sun'))

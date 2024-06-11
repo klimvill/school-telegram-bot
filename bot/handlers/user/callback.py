@@ -4,10 +4,11 @@ from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
-from bot.database import get_schedule_day, reading_schedule, set_class, get_info_student
+from bot.database import get_schedule_day, reading_schedule, set_class, get_info_student, delete_extra_lesson
 from bot.keybords import paging_btn, tomorrow_schedule_btn, yesterday_schedule_btn, teachers_btn_two, teachers_btn_one, \
 	account_btn
-from bot.misc import create_schedule, create_short_schedule, teachers_text, teachers_text_2, register_text
+from bot.misc import create_schedule, create_short_schedule, teachers_text, teachers_text_2, register_text, \
+	delete_extra_lesson_text
 from bot.state import ChangeClass
 
 router_callback = Router()
@@ -58,6 +59,19 @@ async def yesterday_callback(callback: CallbackQuery):
 	await callback.message.edit_text(text_message, reply_markup=await yesterday_schedule_btn(day))
 
 
+@router_callback.callback_query(F.data == 'delete_extra_lesson')
+async def delete_extra_lesson_callback(callback: CallbackQuery, state: FSMContext):
+	delete_extra_lesson(callback.from_user.id)
+	await state.clear()
+	await callback.message.edit_text(delete_extra_lesson_text)
+
+
+@router_callback.callback_query(F.data == 'exit_add_extra_lesson')
+async def exit_extra_lesson_callback(callback: CallbackQuery, state: FSMContext):
+	await state.clear()
+	await callback.message.edit_text('Вы вышли из режима добавления расписания')
+
+
 @router_callback.callback_query(F.data == 'teachers_two_sheet')
 async def teachers_one_sheet_callback(callback: CallbackQuery):
 	await callback.message.edit_text(teachers_text_2, reply_markup=teachers_btn_two)
@@ -83,7 +97,7 @@ async def change_class_callback_two(message: Message, state: FSMContext):
 		set_class(message.from_user.id, data['class_number'])
 
 		await state.clear()
-		await message.answer('Вы успешно зарегистрировались!')
+		await message.answer('Вы успешно сменили класс!')
 
 		info_student = get_info_student(message.from_user.id)
 

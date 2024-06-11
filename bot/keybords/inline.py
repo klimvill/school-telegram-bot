@@ -15,8 +15,8 @@ teachers_btn_two = InlineKeyboardMarkup(inline_keyboard=[
 	[InlineKeyboardButton(text='◀️ Назад', callback_data='teachers_one_sheet')],
 ])
 add_extra_lesson_btn = InlineKeyboardMarkup(inline_keyboard=[
-	[InlineKeyboardButton(text="🗑 Удалить", callback_data="delete_schedule")],
-	[InlineKeyboardButton(text="◀️ Назад", callback_data="exit_add_extra_lesson")],
+	[InlineKeyboardButton(text="🗑 Удалить", callback_data="delete_extra_lesson")],
+	[InlineKeyboardButton(text="◀️ Выйти", callback_data="exit_add_extra_lesson")],
 ])
 account_btn = InlineKeyboardMarkup(inline_keyboard=[
 	[InlineKeyboardButton(text="🌀 Сменить класс", callback_data="change_class")],
