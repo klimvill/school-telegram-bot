@@ -3,9 +3,9 @@ from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
-from bot.database import *
+from bot.database import check_if_user_exists, add_new_user, schedule
+from bot.misc import start_text, register_text, help_text, calls_text
 from bot.keybords import today_schedule_btn
-from bot.misc import *
 from bot.state import Register
 
 router_basic_cmd = Router()
@@ -34,7 +34,7 @@ async def calls(message: Message):
 async def register_user(message: Message, state: FSMContext):
 	# todo: оптимизировать и сделать удобнее
 
-	if message.text.lower() in reading_schedule().keys():
+	if message.text.lower() in schedule.keys():
 		await state.update_data(class_number=message.text.lower())
 
 		data = await state.get_data()

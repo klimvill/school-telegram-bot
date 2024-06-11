@@ -29,7 +29,7 @@ def create_schedule(date: str, schedule_day: list[str]) -> str:
 	text_message = f'📆 *Расписание уроков на {date}*\n'
 	number_current_lesson = get_lesson_number(len(schedule_day))
 
-	if schedule_day != 'Выходной':  # len(schedule_day) != 0
+	if len(schedule_day) != 0:  # schedule_day != 'Выходной'
 		if number_current_lesson in ('Уроки не начались', 'Уроки кончились'): ...
 		elif schedule_day[number_current_lesson] == "":  # Внеурочки от уроков отделяются пустой строчкой в списке
 			number_current_lesson += 1
@@ -57,7 +57,7 @@ def create_short_schedule(day_week: str, schedule_day: list[str]) -> str:
 	count: int = 1
 	text_message = f'📆 *Расписание уроков на {day_week}*\n'
 
-	if schedule_day != 'Выходной':  # len(schedule_day) != 0
+	if len(schedule_day) != 0:  # schedule_day != 'Выходной'
 		for value in schedule_day:
 			if value == '':
 				text_message += '\n\n*Внеурочки*'
