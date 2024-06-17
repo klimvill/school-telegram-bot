@@ -77,6 +77,11 @@ def create_extra_lesson(user_id: int) -> str:
 	if not extra_lesson:
 		text_message += '\nРасписание не добавлено\n'
 	else:
+		try:
+			day_order = ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота', 'воскресенье']
+			extra_lesson = sorted(extra_lesson, key=lambda d: day_order.index(d[0].lower()))
+		except ValueError: ...  # если ключ не найден не сортируем
+
 		for these_classes in extra_lesson:
 			day_week = these_classes[0]
 

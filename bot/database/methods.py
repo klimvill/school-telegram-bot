@@ -1,6 +1,6 @@
 from datetime import date
 from locale import setlocale, LC_ALL
-from typing import Any
+from typing import Any, NoReturn
 
 from .main import *
 
@@ -11,13 +11,13 @@ schedule: dict = reading_schedule()
 user_data: dict = reading_user_data()
 
 
-def check_if_user_exists(user_id: int):
+def check_if_user_exists(user_id: int) -> bool:
 	if str(user_id) in user_data:
 		return True
 	return False
 
 
-def add_new_user(user_id: int, data: dict[str, Any]):
+def add_new_user(user_id: int, data: dict[str, Any]) -> NoReturn:
 	user_data[str(user_id)] = {
 		"id": len(user_data) + 1,
 		"role": "Ученик",
@@ -52,30 +52,30 @@ def add_extra_lesson(user_id: int, data: dict[str, Any]) -> str:
 	return text_complete
 
 
-def get_class(user_id: int):
+def get_class(user_id: int) -> str:
 	return user_data[str(user_id)]['class']
 
 
-def get_schedule_day(user_id: int, day_weekday: str):
+def get_schedule_day(user_id: int, day_weekday: str) -> list[str]:
 	return schedule[get_class(user_id)][day_weekday]
 
 
-def get_extra_lesson(user_id: int):
+def get_extra_lesson(user_id: int) -> list[list[str]]:
 	return user_data[str(user_id)]['extra lessons']
 
 
-def get_info_student(user_id: int):
+def get_info_student(user_id: int) -> tuple[str, str, str, str]:
 	user_id = str(user_id)
 
 	return (user_data[user_id]['id'], user_data[user_id]['role'],
 			user_data[user_id]['class'], user_data[user_id]['date registration'])
 
 
-def delete_extra_lesson(user_id: int) -> None:
+def delete_extra_lesson(user_id: int) -> NoReturn:
 	user_data[str(user_id)]['extra lessons'] = []
 	write_file_user_data(user_data)
 
 
-def set_class(user_id: int, class_: str):
+def set_class(user_id: int, class_: str) -> NoReturn:
 	user_data[str(user_id)]['class'] = class_
 	write_file_user_data(user_data)

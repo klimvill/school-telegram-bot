@@ -16,7 +16,7 @@ file = authorize(credentials)
 sheet = file.open("Python_MUO_Google_Sheet")
 
 
-def reading_schedule() -> {str: {str: []}}:
+def reading_schedule() -> dict[str: dict[str: list[str]]]:
 	table_columns = 39
 	dict_schedule = {}
 
@@ -40,11 +40,11 @@ def reading_schedule() -> {str: {str: []}}:
 	return dict_schedule
 
 
-def reading_user_data() -> {str: {}}:
+def reading_user_data() -> dict[str: dict]:
 	with open(path.join(working_directory, "bot/database/user_data.json"), encoding="utf-8") as file:
 		return json.load(file)
 
 
-def write_file_user_data(data: {}):
+def write_file_user_data(data: dict):
 	with open(path.join(working_directory, "bot/database/user_data.json"), "w", encoding="utf-8") as file:
 		json.dump(data, file, ensure_ascii=False)
