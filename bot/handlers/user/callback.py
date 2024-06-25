@@ -5,8 +5,8 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
 from bot.database import get_schedule_day, reading_schedule, set_class, get_info_student, delete_extra_lesson
-from bot.keybords import paging_btn, tomorrow_schedule_btn, yesterday_schedule_btn, teachers_btn_two, teachers_btn_one, \
-	account_btn
+from bot.keybords import paging_btn, schedule_btn, teachers_btn_two, teachers_btn_one, \
+	account_btn, account_back_btn
 from bot.misc import create_schedule, create_short_schedule, teachers_text, teachers_text_2, register_text, \
 	delete_extra_lesson_text
 from bot.state import ChangeClass
@@ -27,11 +27,11 @@ async def today_callback(callback: CallbackQuery):
 	await callback.message.edit_text(text_message, reply_markup=paging_btn)
 
 
-@router_callback.callback_query(F.data[:8] == 'tomorrow')
-async def tomorrow_callback(callback: CallbackQuery):
+@router_callback.callback_query(F.data[:6] == 'slider')
+async def slider_callback(callback: CallbackQuery):
 	today_date = datetime.today()
 
-	day = int(callback.data[8:])
+	day = int(callback.data[6:])
 	tomorrow_date = today_date + timedelta(days=day)
 	date = tomorrow_date.strftime('%d %b. %Y г.')
 
@@ -40,23 +40,7 @@ async def tomorrow_callback(callback: CallbackQuery):
 	text_message = create_short_schedule(date, user_schedule_day)
 	text_message += "\n\n👇 Вы также можете посмотреть расписание на сегодня."
 
-	await callback.message.edit_text(text_message, reply_markup=await tomorrow_schedule_btn(day))
-
-
-@router_callback.callback_query(F.data[:9] == 'yesterday')
-async def yesterday_callback(callback: CallbackQuery):
-	today_date = datetime.today()
-
-	day = int(callback.data[9:])
-	yesterday_date = today_date + timedelta(days=day)
-	date = yesterday_date.strftime('%d %b. %Y г.')
-
-	user_schedule_day = get_schedule_day(callback.from_user.id, str(yesterday_date.weekday()))
-
-	text_message = create_short_schedule(date, user_schedule_day)
-	text_message += "\n\n👇 Вы также можете посмотреть расписание на сегодня."
-
-	await callback.message.edit_text(text_message, reply_markup=await yesterday_schedule_btn(day))
+	await callback.message.edit_text(text_message, reply_markup=await schedule_btn(day))
 
 
 @router_callback.callback_query(F.data == 'delete_extra_lesson')
@@ -113,9 +97,21 @@ async def change_class_callback_two(message: Message, state: FSMContext):
 
 @router_callback.callback_query(F.data == 'change_role')
 async def change_class_callback_one(callback: CallbackQuery):
-	await callback.message.edit_text('Сменить роль')
+	await callback.message.edit_text('Чтобы изменить роль пишите @klimvill', reply_markup=account_back_btn)
 
 
 @router_callback.callback_query(F.data == 'progress')
 async def change_class_callback_one(callback: CallbackQuery):
-	await callback.message.edit_text('Достижения')
+	await callback.message.edit_text('Достижения', reply_markup=account_back_btn)
+
+
+@router_callback.callback_query(F.data == 'account_back')
+async def teachers_one_sheet_callback(callback: CallbackQuery):
+	info_student = get_info_student(callback.from_user.id)
+
+	text_message = (f'📔 ID: {info_student[0]}\n\n'
+					f'🎭 Роль: {info_student[1]}\n\n'
+					f'🌀 Класс: {info_student[2]}\n\n'
+					f'📆 Дата регистрации: {info_student[3]}')
+
+	await callback.message.edit_text(text_message, reply_markup=account_btn)
