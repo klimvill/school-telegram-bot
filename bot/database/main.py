@@ -1,10 +1,7 @@
 import sqlite3
-from os import getcwd
 
 from gspread import authorize
 from oauth2client.service_account import ServiceAccountCredentials
-
-working_directory = getcwd()
 
 scopes = [
 	"https://www.googleapis.com/auth/spreadsheets",
@@ -13,7 +10,7 @@ scopes = [
 
 credentials = ServiceAccountCredentials.from_json_keyfile_name("bot/config/private_key_google.json", scopes)
 file = authorize(credentials)
-sheet = file.open("Python_MUO_Google_Sheet")
+sheet = file.open("school telegram bot")
 
 
 def reading_schedule() -> dict[str: dict[str: list[str]]]:
