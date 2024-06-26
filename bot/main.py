@@ -6,7 +6,8 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums.parse_mode import ParseMode
 
 from .handlers import register_all_handlers
-from .misc import BOT_TOKEN
+from .config import BOT_TOKEN
+from .database import register_db
 
 
 async def main():
@@ -14,6 +15,7 @@ async def main():
 	dp = Dispatcher()
 
 	register_all_handlers(dp)
+	register_db()
 	await dp.start_polling(bot)
 
 

@@ -163,4 +163,5 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-/bot/misc/private_key_google.json
+/bot/config/private_key_google.json
+/bot/database/users_data.db

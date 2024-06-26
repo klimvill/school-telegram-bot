@@ -1,2 +1,2 @@
 from .methods import *
-from .main import reading_schedule
+from .main import register_db

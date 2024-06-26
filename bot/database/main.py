@@ -1,5 +1,5 @@
-import json
-from os import getcwd, path
+import sqlite3
+from os import getcwd
 
 from gspread import authorize
 from oauth2client.service_account import ServiceAccountCredentials
@@ -11,7 +11,7 @@ scopes = [
 	"https://www.googleapis.com/auth/drive"
 ]
 
-credentials = ServiceAccountCredentials.from_json_keyfile_name("bot/misc/private_key_google.json", scopes)
+credentials = ServiceAccountCredentials.from_json_keyfile_name("bot/config/private_key_google.json", scopes)
 file = authorize(credentials)
 sheet = file.open("Python_MUO_Google_Sheet")
 
@@ -40,11 +40,17 @@ def reading_schedule() -> dict[str: dict[str: list[str]]]:
 	return dict_schedule
 
 
-def reading_user_data() -> dict[str: dict]:
-	with open(path.join(working_directory, "bot/database/user_data.json"), encoding="utf-8") as file:
-		return json.load(file)
+user_db = sqlite3.connect('bot/database/users_data.db')
+cursor = user_db.cursor()
 
 
-def write_file_user_data(data: dict):
-	with open(path.join(working_directory, "bot/database/user_data.json"), "w", encoding="utf-8") as file:
-		json.dump(data, file, ensure_ascii=False)
+def register_db():
+	cursor.execute('''CREATE TABLE IF NOT EXISTS users (
+		"telegram_id" INTEGER NOT NULL UNIQUE,
+		"role" TEXT NOT NULL,
+		"class" TEXT NOT NULL,
+		"date_registration"	TEXT NOT NULL,
+		"extra_lessons" TEXT NOT NULL,
+		"progress" TEXT NOT NULL
+	)''')
+	user_db.commit()
