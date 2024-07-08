@@ -1,8 +1,8 @@
-# SchoolTelegramBot
+# School Telegram Bot
 
 ## Быстрый старт
-1. Клонируйте проект `git clone https://github.com/klimvill/school-telegram-bot.git`
-2. Создайте виртуальное окружение `python -m venv .venv` и активируйте его `venv\Scripts\activate.bat`
+1. Клонируйте проект
+2. Создайте виртуальное окружение и активируйте его
 3. Установите библиотеки `pip install -r requirements.txt`
 4. [Добавьте в переменное окружение BOT_TOKEN](https://stackoverflow.com/questions/42708389/how-to-set-environment-variables-in-pycharm)
 5. Есть два способа настроить получение расписания:
