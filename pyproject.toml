@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "school telegram bot"
+version = "0.1.0"
+description = "Телеграмм бот для просмотра расписания"
+authors = ["Petr Rudichev <petrrudichev@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+sqlalchemy = "^2.0.38"
+aiogram = "^3.18.0"
+from-root = "^1.3.0"
+gspread = "^6.1.4"
+oauth2client = "^4.1.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
