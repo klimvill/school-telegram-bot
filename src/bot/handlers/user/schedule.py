@@ -5,10 +5,10 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
-from bot.database import get_schedule_day, add_extra_lesson
-from bot.keybords import today_schedule_btn, paging_btn, add_extra_lesson_btn
-from bot.misc import create_schedule, create_short_schedule, create_extra_lesson, addExtraLesson_text
-from bot.state import AddExtraLesson
+from src.bot.db.methods import get_schedule_day, add_extra_lesson
+from src.bot.keybords import today_schedule_btn, paging_btn, add_extra_lesson_btn
+from src.bot.misc import AddExtraLesson, create_schedule, create_short_schedule, create_extra_lesson
+from src.resources.application_texts import add_extra_lesson_text
 
 router_schedule = Router()
 
@@ -46,14 +46,15 @@ async def extra_lesson(message: Message):
 
 @router_schedule.message(Command('addExtraLesson'))
 async def add_extra_lesson_one(message: Message, state: FSMContext):
-	await message.answer(addExtraLesson_text, reply_markup=add_extra_lesson_btn)
+	await message.answer(add_extra_lesson_text, reply_markup=add_extra_lesson_btn)
 	await state.set_state(AddExtraLesson.extra_lesson)
 
 
 @router_schedule.message(AddExtraLesson.extra_lesson)
 async def add_extra_lesson_two(message: Message, state: FSMContext):
 	await state.update_data(extra_lesson=message.text)
-	await message.answer(add_extra_lesson(message.from_user.id, await state.get_data()))
+	data = await state.get_data()
+	await message.answer(add_extra_lesson(message.from_user.id, data['extra_lesson']))
 	await state.clear()
 
 

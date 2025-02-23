@@ -4,12 +4,10 @@ from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
-from bot.database import get_schedule_day, reading_schedule, set_class, get_info_student, delete_extra_lesson
-from bot.keybords import paging_btn, schedule_btn, teachers_btn_two, teachers_btn_one, \
-	account_btn, account_back_btn
-from bot.misc import create_schedule, create_short_schedule, teachers_text, teachers_text_2, register_text, \
-	delete_extra_lesson_text
-from bot.state import ChangeClass
+from src.bot.db.methods import get_schedule_day, schedule, set_class, get_info_user, delete_extra_lessons
+from src.bot.keybords import paging_btn, schedule_btn, teachers_btn_two, teachers_btn_one, account_btn, account_back_btn
+from src.bot.misc import create_schedule, create_short_schedule, ChangeClass
+from src.resources.application_texts import teachers_text, teachers_text_2, register_text, delete_extra_lesson_text
 
 router_callback = Router()
 
@@ -45,7 +43,7 @@ async def slider_callback(callback: CallbackQuery):
 
 @router_callback.callback_query(F.data == 'delete_extra_lesson')
 async def delete_extra_lesson_callback(callback: CallbackQuery, state: FSMContext):
-	delete_extra_lesson(callback.from_user.id)
+	delete_extra_lessons(callback.from_user.id)
 	await state.clear()
 	await callback.message.edit_text(delete_extra_lesson_text)
 
@@ -74,7 +72,7 @@ async def change_class_callback_one(callback: CallbackQuery, state: FSMContext):
 
 @router_callback.message(ChangeClass.class_number)
 async def change_class_callback_two(message: Message, state: FSMContext):
-	if message.text.lower() in reading_schedule().keys():
+	if message.text.lower() in schedule.keys():
 		await state.update_data(class_number=message.text.lower())
 
 		data = await state.get_data()
@@ -83,12 +81,12 @@ async def change_class_callback_two(message: Message, state: FSMContext):
 		await state.clear()
 		await message.answer('Вы успешно сменили класс!')
 
-		info_student = get_info_student(message.from_user.id)
+		info_student = get_info_user(message.from_user.id)
 
 		text_message = (f'📔 ID: {info_student[0]}\n\n'
-						f'🎭 Роль: {info_student[1]}\n\n'
+						f'🎭 Роль: {info_student[1].value}\n\n'
 						f'🌀 Класс: {info_student[2]}\n\n'
-						f'📆 Дата регистрации: {info_student[3]}')
+						f"📆 Дата регистрации: {info_student[3].strftime('%d %b. %Y')}")
 
 		await message.answer(text_message, reply_markup=account_btn)
 	else:
@@ -107,11 +105,11 @@ async def change_class_callback_one(callback: CallbackQuery):
 
 @router_callback.callback_query(F.data == 'account_back')
 async def teachers_one_sheet_callback(callback: CallbackQuery):
-	info_student = get_info_student(callback.from_user.id)
+	info_student = get_info_user(callback.from_user.id)
 
 	text_message = (f'📔 ID: {info_student[0]}\n\n'
-					f'🎭 Роль: {info_student[1]}\n\n'
+					f'🎭 Роль: {info_student[1].value}\n\n'
 					f'🌀 Класс: {info_student[2]}\n\n'
-					f'📆 Дата регистрации: {info_student[3]}')
+					f"📆 Дата регистрации: {info_student[3].strftime('%d %b. %Y')}")
 
 	await callback.message.edit_text(text_message, reply_markup=account_btn)

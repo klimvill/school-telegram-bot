@@ -2,21 +2,21 @@ from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
 
-from bot.database import get_info_student
-from bot.keybords import teachers_btn_one, account_btn
-from bot.misc import teachers_text, links_text, person_text
+from src.bot.db.methods import get_info_user
+from src.bot.keybords import teachers_btn_one, account_btn
+from src.resources.application_texts import teachers_text, links_text, person_text
 
 router_other = Router()
 
 
 @router_other.message(Command('account'))
 async def account(message: Message):
-	info_student = get_info_student(message.from_user.id)
+	info_student = get_info_user(message.from_user.id)
 
 	text_message = (f'📔 ID: {info_student[0]}\n\n'
-					f'🎭 Роль: {info_student[1]}\n\n'
+					f'🎭 Роль: {info_student[1].value}\n\n'
 					f'🌀 Класс: {info_student[2]}\n\n'
-					f'📆 Дата регистрации: {info_student[3]}')
+					f"📆 Дата регистрации: {info_student[3].strftime('%d %b. %Y')}")
 
 	await message.answer(text_message, reply_markup=account_btn)
 
