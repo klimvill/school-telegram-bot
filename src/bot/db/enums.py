@@ -4,7 +4,9 @@ CLASSES = ()  # Тут будет список всех классов
 
 
 class RoleType(Enum):
-	ADMIN = "Школьник-админ"
+	ADMIN = "Админ"
+	TEACHER = "Учитель"
+	BETA_TESTER = "Бета-тестер"
 	USER = "Школьник"
 
 
@@ -19,7 +21,7 @@ class DaysOfWeek(Enum):
 
 	@staticmethod
 	def to_string(day: "DaysOfWeek") -> str:
-		return ('Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье')[day.value]
+		return ('Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье')[day.value - 1]
 
 	@staticmethod
 	def week_day(day: str) -> "DaysOfWeek":

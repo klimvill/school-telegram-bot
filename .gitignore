@@ -165,3 +165,4 @@ cython_debug/
 
 /src/resources/private_key_google.json
 /src/resources/database.db
+/src/resources/users_role.json
