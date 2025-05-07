@@ -8,10 +8,11 @@ from sqlalchemy.exc import NoResultFound
 from .enums import RoleType, DaysOfWeek
 from .main import reading_schedule, Database
 from .models import User, ExtraLesson
+from ...resources.application import IS_GOOGLE
 
 setlocale(category=LC_ALL, locale="Russian")  # Настройка локализации для правильной работы datetime
 
-schedule: dict = reading_schedule(False)  # Получение данных
+schedule: dict = reading_schedule(IS_GOOGLE)  # Получение данных
 
 
 def check_if_user_exists(telegram_id: int) -> bool:
