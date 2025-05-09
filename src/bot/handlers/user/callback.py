@@ -20,7 +20,7 @@ async def today_callback(callback: CallbackQuery):
 	user_schedule_day = get_schedule_day(callback.from_user.id, str(today_date.weekday()))
 
 	text_message = create_schedule(date, user_schedule_day)
-	text_message += '\n\n👇 Вы также можете посмотреть расписание на завтра.'
+	text_message += '\n\n👇 Вы также можете посмотреть расписание на завтра'
 
 	await callback.message.edit_text(text_message, reply_markup=paging_btn)
 
@@ -29,14 +29,14 @@ async def today_callback(callback: CallbackQuery):
 async def slider_callback(callback: CallbackQuery):
 	today_date = datetime.today()
 
-	day = int(callback.data[6:])
+	day = int(callback.data[7:])
 	tomorrow_date = today_date + timedelta(days=day)
 	date = tomorrow_date.strftime('%d %b. %Y г.')
 
 	user_schedule_day = get_schedule_day(callback.from_user.id, str(tomorrow_date.weekday()))
 
 	text_message = create_short_schedule(date, user_schedule_day)
-	text_message += "\n\n👇 Вы также можете посмотреть расписание на сегодня."
+	text_message += "\n\n👇 Вы также можете посмотреть расписание на сегодня"
 
 	await callback.message.edit_text(text_message, reply_markup=await schedule_btn(day))
 

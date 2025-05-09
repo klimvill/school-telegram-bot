@@ -29,6 +29,10 @@ def add_new_user(telegram_id: int, telegram_name: str, role: RoleType, user_clas
 	session.commit()
 
 
+def get_all_user() -> list[User]:
+	return Database().session.query(User).all()
+
+
 def get_user_by_id(telegram_id: int) -> User:
 	return Database().session.query(User).where(User.telegram_id == telegram_id).one()
 

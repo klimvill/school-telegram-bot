@@ -124,5 +124,5 @@ def create_extra_lesson(user_id: int) -> str:
 					saved_day_week = day_week
 				text_message += f"{these_classes[1]} ({these_classes[2].strftime('%H:%M')}-{these_classes[3].strftime('%H:%M')})\n"
 
-	text_message += "\n👇 Вы также можете посмотреть расписание на сегодня."
+	text_message += "\n👇 Вы также можете посмотреть расписание на сегодня"
 	return text_message

@@ -5,8 +5,8 @@ today_schedule_btn = InlineKeyboardMarkup(inline_keyboard=[
 	[InlineKeyboardButton(text='📆 Расписание на сегодня', callback_data='today')],
 ])
 paging_btn = InlineKeyboardMarkup(inline_keyboard=[
-	[InlineKeyboardButton(text='◀️ Назад', callback_data='slider-1'),
-	 InlineKeyboardButton(text='Вперед ▶️', callback_data='slider1')],
+	[InlineKeyboardButton(text='◀️ Назад', callback_data='slider:-1'),
+	 InlineKeyboardButton(text='Вперед ▶️', callback_data='slider:1')],
 ])
 teachers_btn_one = InlineKeyboardMarkup(inline_keyboard=[
 	[InlineKeyboardButton(text='Вперед ▶️', callback_data='teachers_two_sheet')],
@@ -27,11 +27,19 @@ account_back_btn = InlineKeyboardMarkup(inline_keyboard=[
 	[InlineKeyboardButton(text='◀️ Назад', callback_data='account_back')],
 ])
 
+send_btn = InlineKeyboardMarkup(inline_keyboard=[
+	[InlineKeyboardButton(text="📣 Всем", callback_data="all")],
+	[InlineKeyboardButton(text="💬 Классу", callback_data="one")]
+])
+send_back_btn = InlineKeyboardMarkup(inline_keyboard=[
+	[InlineKeyboardButton(text='◀️ Назад', callback_data='send_back')],
+])
+
 
 async def schedule_btn(day: int):
 	keyboard = InlineKeyboardBuilder()
-	tomorrow_callback = f'slider{day + 1}'
-	yesterday_callback = f'slider{day - 1}'
+	tomorrow_callback = f'slider:{day + 1}'
+	yesterday_callback = f'slider:{day - 1}'
 
 	if day == -1:
 		tomorrow_callback = 'today'

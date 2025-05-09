@@ -58,7 +58,7 @@ def reading_schedule(is_google: bool) -> Dict[str, Dict[str, List[str]]]:
 			processed_class_schedule["6"] = list(filter(lambda x: x != "-", raw_class_schedule[67:77]))
 			dict_schedule[raw_class_schedule[0]] = processed_class_schedule
 
-		print("Расписание получено...")
+		print("Расписание получено…")
 		return dict_schedule
 	else:
 		with open(SCHEDULES_PATH, encoding="utf-8") as file:
