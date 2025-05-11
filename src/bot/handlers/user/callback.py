@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
 from src.bot.db.methods import get_schedule_day, schedule, set_class, get_info_user, delete_extra_lessons
-from src.bot.keybords import paging_btn, schedule_btn, teachers_btn_two, teachers_btn_one, account_btn, account_back_btn
+from src.bot.keybords import paging_btn, generate_schedule_btn, teachers_btn_two, teachers_btn_one, account_btn, account_back_btn
 from src.bot.misc import create_schedule, create_short_schedule, ChangeClass
 from src.resources.application_texts import teachers_text, teachers_text_2, register_text, delete_extra_lesson_text
 
@@ -38,7 +38,7 @@ async def slider_callback(callback: CallbackQuery):
 	text_message = create_short_schedule(date, user_schedule_day)
 	text_message += "\n\n👇 Вы также можете посмотреть расписание на сегодня"
 
-	await callback.message.edit_text(text_message, reply_markup=await schedule_btn(day))
+	await callback.message.edit_text(text_message, reply_markup=await generate_schedule_btn(day))
 
 
 @router_callback.callback_query(F.data == 'delete_extra_lesson')
