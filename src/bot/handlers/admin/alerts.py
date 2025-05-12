@@ -1,6 +1,5 @@
 """Обработка оповещений"""
 import asyncio
-from typing import Final
 
 from aiogram import Router, F
 from aiogram.filters import Command
@@ -9,9 +8,10 @@ from aiogram.types import CallbackQuery, Message
 
 from src.bot.db.methods import get_all_user
 from src.bot.filters import IsAdmin
-from src.bot.keybords import send_btn, send_back_btn
+from src.bot.keybords import send_btn, generate_reactions_back_btn
 from src.bot.keybords.inline import generate_confirm_btn
 from src.bot.misc import SendAllMessage
+from src.resources.application import EFFECT_IDS
 from src.resources.application_texts import (
 	send_info_text, send_all_info_text
 )
@@ -26,35 +26,31 @@ async def send(message: Message):
 
 @router_alerts.callback_query(F.data == "all", IsAdmin())
 async def send_all_callback_1(callback: CallbackQuery, state: FSMContext):
-	await callback.message.edit_text(send_all_info_text, reply_markup=send_back_btn)
+	await state.update_data(effect=None)
+
+	await callback.message.edit_text(send_all_info_text, reply_markup=await generate_reactions_back_btn(None))
 	await state.set_state(SendAllMessage.message)
+
+
+@router_alerts.callback_query(F.data.startswith("send_effect:"))
+async def send_effect_callback(callback: CallbackQuery, state: FSMContext):
+	old_effect = (await state.get_data())['effect']
+	effect = callback.data.split(":")[1]
+	effect = effect if effect != old_effect else None
+
+	await state.update_data(effect=effect)
+	await callback.message.edit_reply_markup(reply_markup=await generate_reactions_back_btn(effect))
 
 
 @router_alerts.message(SendAllMessage.message, IsAdmin())
 async def send_all_callback_2(message: Message, state: FSMContext):
-	"""
-	EFFECT_IDS: Final[dict[str: str]] = {
-		"🔥": "5104841245755180586",
-		"👍": "5107584321108051014",
-		"🎉": "5046509860389126442",
-		"👎": "5046509860389126442",
-		"💩": "5046509860389126442",
-	}
+	effect = (await state.get_data())['effect']
+	effect_id = EFFECT_IDS[effect] if effect is not None else None
 
-	message_effect = None
-
-	if message.text is not None:
-		for effect in ("🔥", "👍", "❤️", "🎉", "👎", "💩"):
-			if message.text.endswith(effect):
-				message_effect = EFFECT_IDS[effect]
-	elif message.caption is not None:
-		for effect in ("🔥", "👍", "❤️", "🎉", "👎", "💩"):
-			if message.caption.endswith(effect):
-				message_effect = EFFECT_IDS[effect]
-	"""
-
-	await message.send_copy(message.chat.id, reply_markup=await generate_confirm_btn("all"),
-							message_effect_id="5159385139981059251")
+	await message.send_copy(
+		message.chat.id, message_effect_id=effect_id,
+		reply_markup=await generate_confirm_btn("all")
+	)
 	await state.clear()
 
 
@@ -83,7 +79,7 @@ async def send_all_callback_3(callback: CallbackQuery):
 
 @router_alerts.callback_query(F.data == "one", IsAdmin())
 async def send_one_callback(callback: CallbackQuery):
-	await callback.message.edit_text("one", reply_markup=send_back_btn)
+	await callback.message.edit_text("one", reply_markup=await generate_reactions_back_btn(None))
 
 
 @router_alerts.callback_query(F.data == "send_back", IsAdmin())

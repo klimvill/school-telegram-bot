@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, Union
 
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
@@ -33,27 +33,10 @@ send_btn = InlineKeyboardMarkup(inline_keyboard=[
 	[InlineKeyboardButton(text="📣 Всем", callback_data="all")],
 	[InlineKeyboardButton(text="💬 Классу", callback_data="one")]
 ])
-send_back_btn = InlineKeyboardMarkup(inline_keyboard=[
-	[
-		InlineKeyboardButton(text="👍", callback_data="send_effect:like"),
-		InlineKeyboardButton(text="🔥", callback_data="send_effect:fire"),
-		InlineKeyboardButton(text="🎉", callback_data="send_effect:"),
-		InlineKeyboardButton(text="✅ ❤️", callback_data="send_effect:"),
-		InlineKeyboardButton(text="👎", callback_data="send_effect:"),
-	],
-	[InlineKeyboardButton(text='◀️ Назад', callback_data='send_back')],
-])
 confirm_btn = InlineKeyboardMarkup(inline_keyboard=[
 	[InlineKeyboardButton(text="✅ Начать рассылку", callback_data="confirm_send")],
 	[InlineKeyboardButton(text="❌ Отмена", callback_data="cansel_send")]
 ])
-
-
-async def generate_confirm_btn(send_type: Literal["all", "one"]) -> InlineKeyboardMarkup:
-	return InlineKeyboardMarkup(inline_keyboard=[
-		[InlineKeyboardButton(text="✅ Начать рассылку", callback_data=f"confirm_send:{send_type}")],
-		[InlineKeyboardButton(text="❌ Отмена", callback_data=f"cansel_send")]
-	])
 
 
 async def generate_schedule_btn(day: int) -> InlineKeyboardMarkup:
@@ -68,3 +51,27 @@ async def generate_schedule_btn(day: int) -> InlineKeyboardMarkup:
 	keyboard.row(btn_yesterday, btn_tomorrow)
 
 	return keyboard.as_markup()
+
+
+async def generate_confirm_btn(send_type: Literal["all", "one"]) -> InlineKeyboardMarkup:
+	return InlineKeyboardMarkup(inline_keyboard=[
+		[InlineKeyboardButton(text="✅ Начать рассылку", callback_data=f"confirm_send:{send_type}")],
+		[InlineKeyboardButton(text="❌ Отмена", callback_data=f"cansel_send")]
+	])
+
+
+async def generate_reactions_back_btn(
+		select_reaction: Union[Literal["like", "fire", "petard", "heart", "dislike"], None]
+) -> InlineKeyboardMarkup:
+	builder = InlineKeyboardBuilder()
+	reactions = (("👍", "like"), ("🔥", "fire"), ("🎉", "petard"), ("❤️", "heart"), ("👎", "dislike"))
+
+	for emoji, reaction in reactions:
+		builder.button(
+			text=f"✅ {emoji}" if select_reaction == reaction else emoji,
+			callback_data=f"send_effect:{reaction}"
+		)
+	builder.button(text="◀️ Назад", callback_data="send_back")
+	builder.adjust(5, 1)
+
+	return builder.as_markup()

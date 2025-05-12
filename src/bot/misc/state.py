@@ -1,5 +1,6 @@
+from typing import Union
+
 from aiogram.fsm.state import StatesGroup, State
-from aiogram.types import Message
 
 
 class Register(StatesGroup):
@@ -16,3 +17,4 @@ class ChangeClass(StatesGroup):
 
 class SendAllMessage(StatesGroup):
 	message: str = State()
+	effect: Union[str, None] = State()
