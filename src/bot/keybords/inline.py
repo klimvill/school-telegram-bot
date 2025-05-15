@@ -56,7 +56,7 @@ async def generate_schedule_btn(day: int) -> InlineKeyboardMarkup:
 async def generate_confirm_btn(send_type: Literal["all", "one"]) -> InlineKeyboardMarkup:
 	return InlineKeyboardMarkup(inline_keyboard=[
 		[InlineKeyboardButton(text="✅ Начать рассылку", callback_data=f"confirm_send:{send_type}")],
-		[InlineKeyboardButton(text="❌ Отмена", callback_data=f"cansel_send")]
+		[InlineKeyboardButton(text="❌ Отмена", callback_data="cansel_send")]
 	])
 
 
@@ -71,7 +71,7 @@ async def generate_reactions_back_btn(
 			text=f"✅ {emoji}" if select_reaction == reaction else emoji,
 			callback_data=f"send_effect:{reaction}"
 		)
-	builder.button(text="◀️ Назад", callback_data="send_back")
+	builder.button(text="◀️ Выйти", callback_data="send_back")
 	builder.adjust(5, 1)
 
 	return builder.as_markup()

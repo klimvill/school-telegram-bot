@@ -2,6 +2,7 @@
 import asyncio
 
 from aiogram import Router, F
+from aiogram.exceptions import TelegramForbiddenError
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
@@ -13,7 +14,7 @@ from src.bot.keybords.inline import generate_confirm_btn
 from src.bot.misc import SendAllMessage
 from src.resources.application import EFFECT_IDS
 from src.resources.application_texts import (
-	send_info_text, send_all_info_text
+	send_info_text, send_all_info_text, send_during_text, send_end_text
 )
 
 router_alerts = Router()
@@ -51,30 +52,39 @@ async def send_all_callback_2(message: Message, state: FSMContext):
 		message.chat.id, message_effect_id=effect_id,
 		reply_markup=await generate_confirm_btn("all")
 	)
-	await state.clear()
 
 
 @router_alerts.callback_query(F.data == "confirm_send:all")
 async def send_all_callback_3(callback: CallbackQuery):
-	good_send, bad_send = 0, 0
+	good_send, bad_send, blocked_bot = 0, 0, 0
 	users_id = [user.telegram_id for user in get_all_user()]
 
 	copy_callback_message = await callback.message.delete_reply_markup()
-	info_message = await callback.message.answer(f"Начинаю рассылку на {len(users_id)} пользователей...")
+	await callback.message.delete()
+	info_message = await callback.message.answer(
+		send_during_text.format(len(users_id), good_send, bad_send, blocked_bot)
+	)
 
 	for user_id in users_id:
 		try:
 			await copy_callback_message.send_copy(user_id)
 			good_send += 1
+		except TelegramForbiddenError:
+			blocked_bot += 1
 		except Exception as e:
 			bad_send += 1
 			print(f"Ошибка при рассылке для {user_id}: {e}")
 		finally:
 			if good_send % 5 == 0:
-				await info_message.edit_text(f"Рассылка: {good_send}/{len(users_id)} отправлено, {bad_send} ошибок")
+				await info_message.edit_text(send_during_text.format(len(users_id), good_send, bad_send, blocked_bot))
 			await asyncio.sleep(0.05)
 
-	await info_message.edit_text(f"Рассылка завершена!\nУспешно: {good_send}\nНе удалось: {bad_send}")
+	await info_message.edit_text(send_end_text.format(len(users_id), good_send, bad_send, blocked_bot))
+
+
+@router_alerts.callback_query(F.data == "cansel_send")
+async def send_all_callback_3(callback: CallbackQuery):
+	await callback.message.delete()
 
 
 @router_alerts.callback_query(F.data == "one", IsAdmin())
