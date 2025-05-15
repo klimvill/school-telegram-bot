@@ -5,6 +5,7 @@ from aiogram.fsm.state import StatesGroup, State
 
 class Register(StatesGroup):
 	class_number: str = State()
+	photo_profile: str = State()
 
 
 class AddExtraLesson(StatesGroup):

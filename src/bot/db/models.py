@@ -14,6 +14,7 @@ class User(Database.BASE):
 	telegram_name = Column(String(100), nullable=False)
 	role = Column(Enum(RoleType, name='role'), nullable=False)
 	user_class = Column(String(5), nullable=False, index=True)
+	photo_path = Column(String(50), nullable=True)
 	create_at = Column(TIMESTAMP, server_default=func.now())
 
 	extra_lessons = relationship("ExtraLesson", back_populates="user")

@@ -2,10 +2,12 @@ from datetime import datetime, timedelta
 
 from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import CallbackQuery, Message, FSInputFile
 
-from src.bot.db.methods import get_schedule_day, schedule, set_class, get_info_user, delete_extra_lessons
-from src.bot.keybords import paging_btn, generate_schedule_btn, teachers_btn_two, teachers_btn_one, account_btn, account_back_btn
+from src.bot.db.methods import get_schedule_day, schedule, set_class, get_info_user, delete_extra_lessons, \
+	get_photo_path
+from src.bot.keybords import paging_btn, generate_schedule_btn, teachers_btn_two, teachers_btn_one, account_btn, \
+	account_back_btn
 from src.bot.misc import create_schedule, create_short_schedule, ChangeClass
 from src.resources.application_texts import teachers_text, teachers_text_2, register_text, delete_extra_lesson_text
 
@@ -66,17 +68,15 @@ async def teachers_one_sheet_callback(callback: CallbackQuery):
 
 @router_callback.callback_query(F.data == 'change_class')
 async def change_class_callback_one(callback: CallbackQuery, state: FSMContext):
-	await callback.message.edit_text(register_text)
+	await callback.message.delete()
+	await callback.message.answer(register_text)
 	await state.set_state(ChangeClass.class_number)
 
 
 @router_callback.message(ChangeClass.class_number)
 async def change_class_callback_two(message: Message, state: FSMContext):
 	if message.text.lower() in schedule.keys():
-		await state.update_data(class_number=message.text.lower())
-
-		data = await state.get_data()
-		set_class(message.from_user.id, data['class_number'])
+		set_class(message.from_user.id, message.text.lower())
 
 		await state.clear()
 		await message.answer('Вы успешно сменили класс!')
@@ -88,19 +88,22 @@ async def change_class_callback_two(message: Message, state: FSMContext):
 						f'🌀 Класс: {info_student[2]}\n\n'
 						f"📆 Дата регистрации: {info_student[3].strftime('%d %b. %Y')}")
 
-		await message.answer(text_message, reply_markup=account_btn)
+		photo_file = FSInputFile(path=await get_photo_path(message.from_user.id))
+		await message.answer_photo(photo_file, caption=text_message, reply_markup=account_btn)
 	else:
 		await message.answer('Вы ввели неверные данные. Попробуйте ещё раз.')
 
 
 @router_callback.callback_query(F.data == 'change_role')
 async def change_class_callback_one(callback: CallbackQuery):
-	await callback.message.edit_text('Чтобы изменить роль пишите @klimvill', reply_markup=account_back_btn)
+	await callback.message.delete()
+	await callback.message.answer('Чтобы изменить роль пишите @klimvill', reply_markup=account_back_btn)
 
 
 @router_callback.callback_query(F.data == 'progress')
 async def change_class_callback_one(callback: CallbackQuery):
-	await callback.message.edit_text('Достижения', reply_markup=account_back_btn)
+	await callback.message.delete()
+	await callback.message.answer('Достижения', reply_markup=account_back_btn)
 
 
 @router_callback.callback_query(F.data == 'account_back')
@@ -112,4 +115,7 @@ async def teachers_one_sheet_callback(callback: CallbackQuery):
 					f'🌀 Класс: {info_student[2]}\n\n'
 					f"📆 Дата регистрации: {info_student[3].strftime('%d %b. %Y')}")
 
-	await callback.message.edit_text(text_message, reply_markup=account_btn)
+	await callback.message.delete()
+	photo_file = FSInputFile(path=await get_photo_path(callback.from_user.id))
+	await callback.message.answer_photo(photo_file, caption=text_message, reply_markup=account_btn)
+

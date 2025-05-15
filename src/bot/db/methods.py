@@ -1,6 +1,7 @@
 from datetime import datetime
 from locale import setlocale, LC_ALL
-from typing import NoReturn, List, Tuple
+from os import path
+from typing import NoReturn, List, Tuple, Union, BinaryIO
 
 from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
@@ -8,7 +9,7 @@ from sqlalchemy.exc import NoResultFound
 from .enums import RoleType, DaysOfWeek
 from .main import reading_schedule, Database
 from .models import User, ExtraLesson
-from ...resources.application import IS_GOOGLE
+from ...resources.application import IS_GOOGLE, PROFILE_PHOTOS_PATH
 
 setlocale(category=LC_ALL, locale="Russian")  # Настройка локализации для правильной работы datetime
 
@@ -108,3 +109,21 @@ def set_class(telegram_id: int, user_class: str) -> NoReturn:
 	user = session.query(User).where(User.telegram_id == telegram_id).one()
 	user.user_class = user_class
 	session.commit()
+
+
+async def add_photo(telegram_id: int, photo: BinaryIO) -> None:
+	photo_path = path.join(PROFILE_PHOTOS_PATH, f"profile_{telegram_id}.jpg")
+
+	with open(photo_path, 'wb') as new_file:
+		new_file.write(photo.read())
+
+	session = Database().session
+	user = session.query(User).where(User.telegram_id == telegram_id).one()
+	user.photo_path = photo_path
+	session.commit()
+
+
+async def get_photo_path(telegram_id: int) -> Union[str, None]:
+	session = Database().session
+	user = session.query(User).where(User.telegram_id == telegram_id).one()
+	return user.photo_path

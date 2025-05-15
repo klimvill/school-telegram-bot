@@ -4,7 +4,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
 from src.bot.db.enums import RoleType
-from src.bot.db.methods import check_if_user_exists, add_new_user, schedule
+from src.bot.db.methods import check_if_user_exists, add_new_user, schedule, add_photo
 from src.bot.keybords import today_schedule_btn
 from src.bot.misc import Register
 from src.resources.application import ADMINS_ID, BETA_TESTERS_ID, TEACHERS
@@ -39,9 +39,26 @@ async def get_telegram_id(message: Message):
 
 
 @router_basic_cmd.message(Register.class_number)
-async def register_user(message: Message, state: FSMContext):
+async def register_user_two(message: Message, state: FSMContext):
 	if message.text.lower() in schedule.keys():
-		class_number = message.text.lower()
+		await state.update_data(class_number=message.text.lower())
+
+		# await state.clear()
+		await state.set_state(Register.photo_profile)
+		await message.answer("Пришлите фотографию для вашего профиля")
+
+	else:
+		await message.answer(invalid_class_format_error)
+
+
+@router_basic_cmd.message(Register.photo_profile)
+async def register_user_two(message: Message, state: FSMContext):
+	if message.photo is None:
+		await message.answer("Пришлите фотографию!")
+	else:
+		file_info = await message.bot.get_file(message.photo[-1].file_id)
+		downloaded_file = await message.bot.download_file(file_info.file_path)
+		await message.answer("Фото установленно!")
 
 		role = RoleType.USER
 		if message.from_user.id in ADMINS_ID:
@@ -53,14 +70,12 @@ async def register_user(message: Message, state: FSMContext):
 		elif message.from_user.id in BETA_TESTERS_ID:
 			await message.answer(welcome_beta_tester_text)
 			role = RoleType.BETA_TESTER
-
-		add_new_user(message.from_user.id, message.from_user.username, role, class_number)
-
-		await state.clear()
+		data = await state.get_data()
+		add_new_user(message.from_user.id, message.from_user.username, role, data["class_number"])
+		await add_photo(message.from_user.id, downloaded_file)
 		await message.answer(successful_registration_text)
 
-	else:
-		await message.answer(invalid_class_format_error)
+		await state.clear()
 
 
 @router_basic_cmd.message(Command('calls'))

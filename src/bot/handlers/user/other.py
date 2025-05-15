@@ -1,8 +1,8 @@
 from aiogram import Router
 from aiogram.filters import Command
-from aiogram.types import Message
+from aiogram.types import Message, FSInputFile
 
-from src.bot.db.methods import get_info_user
+from src.bot.db.methods import get_info_user, get_photo_path
 from src.bot.keybords import teachers_btn_one, account_btn
 from src.resources.application_texts import teachers_text, links_text, person_text
 
@@ -18,7 +18,8 @@ async def account(message: Message):
 					f'🌀 Класс: {info_student[2]}\n\n'
 					f"📆 Дата регистрации: {info_student[3].strftime('%d %b. %Y')}")
 
-	await message.answer(text_message, reply_markup=account_btn)
+	photo_file = FSInputFile(path=await get_photo_path(message.from_user.id))
+	await message.answer_photo(photo_file, caption=text_message, reply_markup=account_btn)
 
 
 @router_other.message(Command('teachers'))

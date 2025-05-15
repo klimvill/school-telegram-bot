@@ -8,6 +8,7 @@ from from_root import from_root
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 DATABASE_PATH = f"sqlite:///{from_root()}/src/resources/database.db"
 SCHEDULES_PATH = path.join(from_root(), "src\\resources\\schedules.json")
+PROFILE_PHOTOS_PATH = path.join(from_root(), "src\\resources\\profile_photos")
 IS_GOOGLE = False
 
 EFFECT_IDS: Final[dict[str: str]] = {
