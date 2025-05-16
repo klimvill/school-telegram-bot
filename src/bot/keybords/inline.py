@@ -22,8 +22,6 @@ add_extra_lesson_btn = InlineKeyboardMarkup(inline_keyboard=[
 ])
 account_btn = InlineKeyboardMarkup(inline_keyboard=[
 	[InlineKeyboardButton(text="🌀 Сменить класс", callback_data="change_class")],
-	[InlineKeyboardButton(text="🎭 Сменить роль", callback_data="change_role")],
-	[InlineKeyboardButton(text="🌟 Достижения", callback_data="progress")],
 ])
 account_back_btn = InlineKeyboardMarkup(inline_keyboard=[
 	[InlineKeyboardButton(text='◀️ Назад', callback_data='account_back')],
@@ -31,7 +29,6 @@ account_back_btn = InlineKeyboardMarkup(inline_keyboard=[
 
 send_btn = InlineKeyboardMarkup(inline_keyboard=[
 	[InlineKeyboardButton(text="📣 Всем", callback_data="all")],
-	[InlineKeyboardButton(text="💬 Классу", callback_data="one")]
 ])
 confirm_btn = InlineKeyboardMarkup(inline_keyboard=[
 	[InlineKeyboardButton(text="✅ Начать рассылку", callback_data="confirm_send")],

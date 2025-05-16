@@ -1,6 +1,8 @@
 import json
+from os import path
 from typing import Final, Dict, List
 
+from from_root import from_root
 from gspread import authorize
 from oauth2client.service_account import ServiceAccountCredentials
 from sqlalchemy import create_engine
@@ -35,7 +37,7 @@ def reading_schedule(is_google: bool) -> Dict[str, Dict[str, List[str]]]:
 			"https://www.googleapis.com/auth/drive"
 		]
 
-		credentials = ServiceAccountCredentials.from_json_keyfile_name("bot/config/private_key_google.json", scopes)
+		credentials = ServiceAccountCredentials.from_json_keyfile_name(path.join(from_root(), "src\\resources\\private_key_google.json"), scopes)
 		file = authorize(credentials)
 		sheet = file.open("school telegram bot")
 
