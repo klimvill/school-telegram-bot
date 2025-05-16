@@ -24,7 +24,7 @@
     айдишники админов, бета-тестеров и учителей (["5а", "6г", "10а"] - список классов, которыми учитель управляет).
     Переменные вынесены в отдельный файл, потому что предполагается раздача ролей и управление учителями
     напрямую через бота.
-  - Если хотите, чтобы расписание подтягивалось из Google Sheets измените `IS_GOOGLE = True`, потом
+  -Есть два варианта подгрузки расписания через файл (`IS_GOOGLE = False`) и из Google Sheets. Если хотите, чтобы расписание подтягивалось из Google Sheets измените `IS_GOOGLE = True`, потом
     скопируйте ссылку на гугл диск [таблицу](https://docs.google.com/spreadsheets/d/10tHlL4Z_HsXdtDCiLJn2lElQew0aoh-W1J1dOpEKAwA/edit?usp=sharing).
     Создайте ключ от [google api](https://azzrael.ru/google-cloud-platform-create-app).
     Поместите его в папку `src/resources`, назвав `private_key_google.json`.
